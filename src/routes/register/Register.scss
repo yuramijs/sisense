@@ -1,0 +1,63 @@
+@import '../../components/variables.css';
+
+.root {
+  padding-left: 20px;
+  padding-right: 20px;
+}
+
+.container {
+  margin: 0 auto;
+  padding: 0 0 40px;
+  max-width: var(--max-content-width);
+}
+
+.register {
+  &__form {
+    &__label {
+      display: block;
+      color: #646464;
+      font-size: 14px;
+      margin-bottom: 5px;
+    }
+    &__input {
+      min-width: 270px;
+      width: auto;
+      background: #fff;
+      border-radius: 2px;
+      border: solid 1px #c2c2c2;
+      color: #444;
+      font-size: 14px;
+      height: 34px;
+      line-height: 34px;
+      padding: 0 8px;
+      vertical-align: middle;
+      margin-bottom: 20px;
+    }
+    &__button {
+      display: block;
+      min-width: 286px;
+      background: #4285f4;
+      border: 1px solid #4285f4;
+      color: #fff;
+      box-shadow: 1px 1px 1px rgba(25, 25, 25, 0.2);
+      font-size: 13px;
+      font-weight: 500;
+      height: 34px;
+      line-height: 27px;
+      outline: 0;
+      text-align: center;
+      text-transform: uppercase;
+      transition: all .218s;
+      vertical-align: middle;
+      white-space: nowrap;
+      &:hover {
+        background: #3b78e7;
+        border: 1px solid #3b78e7;
+        box-shadow: 1px 1px 1px rgba(25, 25, 25, 0.2);
+      }
+      &:active {
+        background: #3170e2;
+      }
+    }
+  }
+}
