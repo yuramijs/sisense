@@ -7,7 +7,8 @@ routes.post('/authenticate', (req, res) => User.authenticate(req, res));
 routes.get('/users', (req, res) => User.findAll(res));
 routes.get('/users/:params', (req, res) => User.findBy(req, res));
 
-
+//TODO enable secure
+//save token to db with crypto
 // app.use(function(req, res, next) {
 //
 //   // check header or url parameters or post parameters for token

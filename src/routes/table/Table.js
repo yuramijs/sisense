@@ -13,8 +13,12 @@ class Table extends React.Component {
     }
   }
 
-  getTable = () => {
+  componentDidMount() {
     this.props.getTable();
+  }
+
+  getTable = () => {
+    // this.props.getTable();
     this.setState({
       table: this.props.table.getTables.table
     });
@@ -34,6 +38,7 @@ class Table extends React.Component {
   };
 
   render() {
+    console.log(this.props.table.getTables.table);
     return (
       <div className="card">
         <div onClick={() => this.sortByName()}>sortByName</div>
@@ -42,7 +47,7 @@ class Table extends React.Component {
         <input type="text" onChange={this.onChange.bind(this)} />
         Table
         <div>
-          {this.state.table && this.state.table.map((item, index) => (
+          {this.props.table.getTables.table && this.props.table.getTables.table.map((item, index) => (
               <div key={index}>{item.name}</div>
           ))
           }

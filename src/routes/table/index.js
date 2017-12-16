@@ -1,16 +1,16 @@
 import React from 'react';
 import Layout from '../../components/Layout';
-import Login from './Table';
+import Table from './Table';
 
 const title = 'Table';
 
-const action = () => {
+const action = async () => {
   return {
     chunks: ['table'],
     title,
     component: (
       <Layout>
-        <Login title={title} />
+        <Table title={title}/>
       </Layout>
     ),
   };
