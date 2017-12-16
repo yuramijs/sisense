@@ -20,7 +20,7 @@ const routes = {
   async action({ next }) {
     const route = await next();
 
-    route.title = `${route.title || 'Test'} - Test`;
+    route.title = 'Test';
     route.description = route.description || '';
 
     return route;
