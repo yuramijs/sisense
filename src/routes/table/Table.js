@@ -31,13 +31,7 @@ class Table extends Component {
   };
 
   sortByName = () => {
-    this.props.getTable();
-    const data = this.props.table.getTables.table;
-    const sortedByName = sortBy(data, [item => item.name]).reverse();
-
-    this.setState({
-      table: sortedByName
-    });
+    this.props.getTable(null);
   };
 
   onChange = event => {
@@ -45,9 +39,11 @@ class Table extends Component {
     this.props.getTable(params);
   };
 
-  handleScroll = (event) => {
-    if(event.currentTarget.scrollTop > view) {
-      view += view;
+  handleScroll = event => {
+    if(event.currentTarget.scrollTop >= view) {
+      view += 700;
+      console.log('view', view);
+      console.log(event.currentTarget.scrollTop);
       this.getData()
     }
   };

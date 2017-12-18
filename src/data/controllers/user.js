@@ -17,7 +17,7 @@ export default class User {
     user
       .find({})
       .skip(chunk)
-      .limit(20)
+      .limit(40)
       .exec((err, users) => {
         if (err) return console.log(err);
         res.json(users)
