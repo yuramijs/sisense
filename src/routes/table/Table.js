@@ -11,7 +11,7 @@ import {connect} from 'react-redux';
 import getTable from '../../actions/getTable';
 
 let count = 10;
-let view = 700;
+let view = 100;
 
 class Table extends Component {
   constructor() {
@@ -41,9 +41,7 @@ class Table extends Component {
 
   handleScroll = event => {
     if(event.currentTarget.scrollTop >= view) {
-      view += 700;
-      console.log('view', view);
-      console.log(event.currentTarget.scrollTop);
+      view += 100;
       this.getData()
     }
   };
