@@ -1,12 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import withStyles from 'isomorphic-style-loader/lib/withStyles';
-// external-global styles must be imported in your JS.
+
 import normalizeCss from 'normalize.css';
-import s from './Layout.css';
 
 import coreUI from './../../../scss/style.scss';
-import FontAwesome from './../../../node_modules/font-awesome/scss/font-awesome.scss';
 
 class Layout extends React.Component {
   static propTypes = {
@@ -30,4 +28,4 @@ class Layout extends React.Component {
   }
 }
 
-export default withStyles(normalizeCss, s, coreUI, FontAwesome)(Layout);
+export default withStyles(normalizeCss, coreUI)(Layout);

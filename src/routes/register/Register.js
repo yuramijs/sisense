@@ -3,20 +3,15 @@ import PropTypes from 'prop-types';
 import withStyles from 'isomorphic-style-loader/lib/withStyles';
 import s from './Register.scss';
 
-import {sendData} from '../../helpers/helpers';
+import {sendData, getFormValues} from '../../helpers';
 
 class Register extends React.Component {
-  constructor(props) {
-    super(props);
-  }
 
-  submit(event) {
+  handleSubmit = event => {
     event.preventDefault();
-    const data = this.state;
+    const data = getFormValues(this);
     const link = event.target.action;
-
     sendData(link, data);
-
     this.loginForm.reset();
   }
 
@@ -26,10 +21,11 @@ class Register extends React.Component {
         <div className="card-header">
           <h5>{this.props.title}</h5>
         </div>
+      
         <form
           action="/register"
           ref={el => this.loginForm = el}
-          onSubmit={this.submit.bind(this)}>
+          onSubmit={this.handleSubmit}>
           <div className="card-body">
             <label
               className={s.register__form__label}

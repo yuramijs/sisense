@@ -1,32 +1,40 @@
-import React, {Component, Fragment} from 'react';
+import React, {Component} from 'react';
 import {sortBy} from 'lodash';
+
+import withStyles from 'isomorphic-style-loader/lib/withStyles';
+import s from './Table.css'
+
+import List from './../List';
 
 import {connect} from 'react-redux';
 
 import getTable from '../../actions/getTable';
+
+let count = 10;
+let view = 700;
 
 class Table extends Component {
   constructor() {
     super();
     this.state = {
       table: []
-    }
+    };
   }
 
   componentDidMount() {
     this.props.getTable();
   }
 
-  getTable = () => {
-    // this.props.getTable();
-    this.setState({
-      table: this.props.table.getTables.table
-    });
+  getData = () => {
+    count += count;
+    this.props.getTable(count);
   };
 
   sortByName = () => {
-    const data = this.state.table;
-    const sortedByName = sortBy(data, [item => item.name]);
+    this.props.getTable();
+    const data = this.props.table.getTables.table;
+    const sortedByName = sortBy(data, [item => item.name]).reverse();
+
     this.setState({
       table: sortedByName
     });
@@ -37,38 +45,41 @@ class Table extends Component {
     this.props.getTable(params);
   };
 
+  handleScroll = (event) => {
+    if(event.currentTarget.scrollTop > view) {
+      view += view;
+      this.getData()
+    }
+  };
+
+
   render() {
+    const {table} = this.props.table.getTables;
+
     return (
       <div className="card">
+      {this.state.direction}
         <div onClick={() => this.sortByName()}>sortByName</div>
-        <div onClick={() => this.getTable()}>getTable</div>
-        <p>Search</p>
+        <h2>Search</h2>
         <input type="text" onChange={this.onChange.bind(this)} />
-        <table className="table">
-          <thead>
-          <tr>
-            <th>id</th>
-            <th>Name</th>
-            <th>Date</th>
-            <th>String</th>
-            <th>Number</th>
-          </tr>
-          </thead>
-          <tbody>
-            {this.props.table.getTables.table &&
-            this.props.table.getTables.table.map((item, index) => (
-              <Fragment key={index}>
-                <tr>
-                  <td>{item._id}</td>
-                  <td>{item.name}</td>
-                  <td>Date</td>
-                  <td>String</td>
-                  <td>Number</td>
-                </tr>
-              </Fragment>
-            ))}
-          </tbody>
-        </table>
+        <br/>
+        <h2>Table</h2>
+        <div className={s.table__wrapper} onScroll={event => this.handleScroll(event)}>
+          <table className="table">
+            <thead>
+            <tr>
+              <th>id</th>
+              <th>Name</th>
+              <th>Date</th>
+              <th>String</th>
+              <th>Number</th>
+            </tr>
+            </thead>
+            <tbody>
+              <List list={table}/>
+            </tbody>
+          </table>
+        </div>
       </div>
     );
   }
@@ -84,4 +95,4 @@ const mapDispatchToProps = {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(Table);
+)(withStyles(s)(Table));

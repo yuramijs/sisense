@@ -1,10 +1,11 @@
 import axios from 'axios';
 export const GET_TOKEN = 'GET_TOKEN';
 
-const getToken = async () => {
+const getToken = async (name, password) => {
+  console.log('getToken', name)
   const token = await axios.post('http://localhost:3000/authenticate', {
-    name: 'test',
-    password: 'password'
+    name,
+    password
   });
 
   const data = token.data.token;

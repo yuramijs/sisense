@@ -1,8 +1,15 @@
 const routes = require('express').Router();
 import {User} from './../data/controllers';
 
+
 routes.post('/register', (req, res) => User.register(req, res));
 routes.post('/authenticate', (req, res) => User.authenticate(req, res));
+routes.get('/setup', (req, res) => User.dummyDB(req, res));
+
+routes.post('/chunk', (req, res) => {
+  const chunk = req.body.chunk;
+  User.findByChunk(res, chunk)
+});
 
 routes.get('/users', (req, res) => User.findAll(res));
 routes.get('/users/:params', (req, res) => User.findBy(req, res));
