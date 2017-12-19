@@ -1,3 +1,4 @@
 import User from './user';
+import Table from './table';
 
-export {User};
+export {User, Table};

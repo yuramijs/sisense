@@ -145,7 +145,6 @@ async function onLocationChange(location, action) {
 // For more information visit https://github.com/mjackson/history#readme
 history.listen(onLocationChange);
 onLocationChange(currentLocation);
-
 // Enable Hot Module Replacement (HMR)
 if (module.hot) {
   module.hot.accept('./router', () => {

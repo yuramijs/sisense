@@ -1,7 +1,8 @@
 import axios from 'axios';
 export const GET_TABLE = 'GET_TABLE';
+import {reverse} from 'lodash';
 
-const getTable = async (chunk) => {
+const getTable = async (chunk, params, name) => {
 
   const token = localStorage.getItem('token');
 
@@ -10,25 +11,29 @@ const getTable = async (chunk) => {
       'Authorization': token,
     }
   };
+  let chunks = null;
+  let data = null;
 
-  //const token = await axios.get(`http://localhost:3000/users/`); //${params}
-  if(chunk === null) {
-    const chunk = await axios.post('http://localhost:3000/chunk', {chunk:0, token}, config);
-    const data = chunk.data.reverse();
-    return {
-      type: GET_TABLE,
-      payload: data,
-    };
+  if(params) {
+    chunks = await axios.get(`http://localhost:3000/tables/${params} `);
+    data = chunks.data;
+  }
+  else if (name) {
+    chunks = await axios.post('http://localhost:3000/chunk', {chunk: 10, token}, config);
+    data = chunks.data;
+    reverse(data);
   }
   else {
-    const chunks = await axios.post('http://localhost:3000/chunk', {chunk, token}, config);
-    const data = chunks.data;
-
-    return {
-      type: GET_TABLE,
-      payload: data,
-    };
+    chunks = await axios.post('http://localhost:3000/chunk', {chunk, token}, config);
+    data = chunks.data;
   }
+
+
+  return {
+    type: GET_TABLE,
+    payload: data,
+  };
+
 
 };
 

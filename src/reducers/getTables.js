@@ -1,11 +1,9 @@
 import {GET_TABLE} from '../actions/getTable';
 
-const INITIAL_STATE = {};
-
-export default function getTables(state = INITIAL_STATE, action) {
+export default function getTables(state = {}, action) {
   switch (action.type) {
     case GET_TABLE:
-      return {...state, table: action.payload};
+      return state = action.payload;
     default:
       return state;
   }

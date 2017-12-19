@@ -1,5 +1,4 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import withStyles from 'isomorphic-style-loader/lib/withStyles';
 import s from './Register.scss';
 
@@ -7,13 +6,14 @@ import {sendData, getFormValues} from '../../helpers';
 
 class Register extends React.Component {
 
-  handleSubmit = event => {
-    event.preventDefault();
+  handleSubmit = e => {
+    e.preventDefault();
     const data = getFormValues(this);
-    const link = event.target.action;
+    const link = 'http://localhost:3000/register';
     sendData(link, data);
+
     this.loginForm.reset();
-  }
+  };
 
   render() {
     return (
@@ -23,7 +23,7 @@ class Register extends React.Component {
         </div>
       
         <form
-          action="/register"
+          method="post"
           ref={el => this.loginForm = el}
           onSubmit={this.handleSubmit}>
           <div className="card-body">
@@ -50,7 +50,7 @@ class Register extends React.Component {
             />
           </div>
           <div className="card-footer">
-            <button className="btn btn-primary">Sign up</button>
+            <button className="btn btn-primary">Register</button>
           </div>
         </form>
       </div>
