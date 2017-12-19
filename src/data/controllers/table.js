@@ -1,6 +1,6 @@
-import {Table as table} from '../models';
+import dummy from 'mongoose-dummy';
 
-const dummy = require('mongoose-dummy');
+import {Table as table} from '../models';
 
 const ignoredFields = ['_id','created_at', '__v'];
 
@@ -19,7 +19,7 @@ export default class Table {
       .skip(chunk)
       .limit(40)
       .exec((err, users) => {
-        if (err) return console.log(err);
+        if (err) throw err;
         res.json(users)
       });
 
@@ -38,7 +38,9 @@ export default class Table {
         ignore: ignoredFields,
         returnDate: true
       });
-      new table(randomObject).save();
+      new table(randomObject).save(err => {
+        if (err) throw err;
+      });
     }
 
     res.json({

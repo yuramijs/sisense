@@ -5,14 +5,10 @@ import config from './../../config.js';
 
 const secret = config.auth.jwt.secret;
 
-
 export default class User {
-
   static register(req, res) {
     const data = req.body;
-
     const users = new user(data);
-
     users.save(err => {
       if (err) throw err;
 
@@ -22,12 +18,10 @@ export default class User {
       });
     });
   }
-
   static authenticate(req, res) {
 
     const {name, password} = req.body;
 
-    //TODO change to findAll
     user.findOne({name}, (err, user) => {
       if (err) throw err;
       if (!user) return res.status(401).send('Authentication failed. User not found.');
@@ -44,7 +38,5 @@ export default class User {
 
     });
 
-
   }
-
 }
