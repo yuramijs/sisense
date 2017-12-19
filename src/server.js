@@ -8,8 +8,6 @@ import PrettyError from 'pretty-error';
 
 import App from './components/App';
 import Html from './components/Html';
-import {ErrorPageWithoutStyle} from './routes/error/ErrorPage';
-import errorPageStyle from './routes/error/ErrorPage.css';
 import createFetch from './createFetch';
 import router from './router';
 
@@ -130,15 +128,15 @@ const pe = new PrettyError();
 pe.skipNodeFiles();
 pe.skipPackage('express');
 
-// eslint-disable-next-line no-unused-vars
+
 app.use((err, req, res, next) => {
   const html = ReactDOM.renderToStaticMarkup(
     <Html
       title="Internal Server Error"
       description={err.message}
-      styles={[{ id: 'css', cssText: errorPageStyle._getCss() }]} // eslint-disable-line no-underscore-dangle
+      styles={[{ id: 'css', cssText: errorPageStyle._getCss() }]}
     >
-      {ReactDOM.renderToString(<ErrorPageWithoutStyle error={err} />)}
+      {err}
     </Html>,
   );
   res.status(err.status || 500);

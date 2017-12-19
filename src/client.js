@@ -74,28 +74,24 @@ let appInstance;
 let currentLocation = history.location;
 
 async function onLocationChange(location, action) {
-  // Remember the latest scroll position for the previous location
+
   scrollPositionsHistory[currentLocation.key] = {
     scrollX: window.pageXOffset,
     scrollY: window.pageYOffset,
   };
-  // Delete stored scroll position for next page if any
+
   if (action === 'PUSH') {
     delete scrollPositionsHistory[location.key];
   }
   currentLocation = location;
 
   try {
-    // Traverses the list of routes in the order they are defined until
-    // it finds the first route that matches provided URL path string
-    // and whose action method returns anything other than `undefined`.
     const route = await router.resolve({
       ...context,
       path: location.pathname,
       query: queryString.parse(location.search),
     });
 
-    // Prevent multiple page renders during the routing process
     if (currentLocation.key !== location.key) {
       return;
     }
@@ -117,7 +113,6 @@ async function onLocationChange(location, action) {
 
     console.error(error);
 
-    // Do a full page reload if error occurs during client-side navigation
     if (action && currentLocation.key === location.key) {
       window.location.reload();
     }

@@ -27,11 +27,5 @@ const routes = {
   },
 };
 
-if (__DEV__) {
-  routes.children.unshift({
-    path: '/error',
-    action: require('./error').default,
-  });
-}
 
 export default routes;
