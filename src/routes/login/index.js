@@ -4,7 +4,7 @@ import Login from './Login';
 
 const title = 'Log In';
 
-function action() {
+const action = () => {
   return {
     chunks: ['login'],
     title,

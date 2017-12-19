@@ -1,7 +1,9 @@
-import {User as user} from '../models';
 import jwt from 'jsonwebtoken';
 
-const secret = 'secret';
+import {User as user} from '../models';
+import config from './../../config.js';
+
+const secret = config.auth.jwt.secret;
 
 
 export default class User {
@@ -26,16 +28,16 @@ export default class User {
   }
 
   static register(req, res) {
-    const {name, password} = req.body;
+    const data = req.body;
 
-    const users = new user({ name, password });
+    const users = new user(data);
 
     users.save(err => {
       if (err) throw err;
 
       res.json({
         success: true,
-        message: 'User saved successfully'
+        message: 'User saved successfully',
       });
     });
   }
@@ -48,7 +50,7 @@ export default class User {
   }
 
   static dummyDB(req, res) {
-    for( var i = 0; i < 100000; i++ ) {
+    for( let i = 0; i < 100000; i++ ) {
       new user( {name:  i, password: 'pass'} ).save();
     }
     res.json({
@@ -64,28 +66,17 @@ export default class User {
     //TODO change to findAll
     user.findOne({name}, (err, user) => {
       if (err) throw err;
-      if (!user) return res.json({ success: false, message: 'Authentication failed. User not found.' })
-      if (user.password !== password) return res.json({ success: false, message: 'Authentication failed. Wrong password.' })
+      if (!user) return res.json({ success: false, message: 'Authentication failed. User not found.' });
+      if (user.password !== password) return res.json({ success: false, message: 'Authentication failed. Wrong password.' });
 
-      const payload = {
-        admin: user.admin
-      };
-
-      const token = jwt.sign(payload, secret, {
-        expiresIn: 86400
+      const token = jwt.sign(null, secret, {
+        expiresInMinutes: 1440,
       });
 
       res.json({
         success: true,
-        token: token
+        token,
       });
-
-      // user.findOneAndUpdate({password: password}, {$set:{name: token}}, (err, doc) => {
-      //   if(err) return console.log("Something wrong when updating data!");
-    
-      //   console.log('Token save');
-      // });
-
 
     });
 

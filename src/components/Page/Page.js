@@ -10,7 +10,6 @@ class Page extends React.Component {
 
   render() {
     const { title, html } = this.props;
-
     return (
       <div className={s.root}>
         <div className={s.container}>

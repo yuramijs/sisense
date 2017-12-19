@@ -1,38 +1,31 @@
 import React, {Component} from 'react';
-import {sortBy} from 'lodash';
 
 import withStyles from 'isomorphic-style-loader/lib/withStyles';
 import s from './Table.css'
 
-import List from './../List';
+import List from './../../components/List';
 
 import {connect} from 'react-redux';
 
 import getTable from '../../actions/getTable';
 
-let count = 10;
-let view = 100;
+let skip = 20;
+let view = 700;
 
 class Table extends Component {
-  constructor() {
-    super();
-    this.state = {
-      table: []
-    };
-  }
 
+  //init data
   componentDidMount() {
     this.props.getTable();
   }
 
+  //get new data
   getData = () => {
-    count += count;
-    this.props.getTable(count);
+    skip += skip;
+    this.props.getTable(skip);
   };
 
-  sortByName = () => {
-    this.props.getTable(null);
-  };
+  sortByName = () => this.props.getTable(null);
 
   onChange = event => {
     const params = event.target.value;
@@ -41,14 +34,14 @@ class Table extends Component {
 
   handleScroll = event => {
     if(event.currentTarget.scrollTop >= view) {
-      view += 100;
+      view += 1400;
       this.getData()
     }
   };
 
 
   render() {
-    const {table} = this.props.table.getTables;
+    const {table} = this.props;
 
     return (
       <div className="card">
@@ -69,7 +62,7 @@ class Table extends Component {
               <th>Number</th>
             </tr>
             </thead>
-            <tbody>
+            <tbody className={s.table__wrapper}>
               <List list={table}/>
             </tbody>
           </table>
@@ -81,10 +74,10 @@ class Table extends Component {
 
 
 const mapStateToProps = state => ({
-  table: state,
+  table: state.getTables.table,
 });
 const mapDispatchToProps = {
-  getTable
+  getTable,
 };
 export default connect(
   mapStateToProps,

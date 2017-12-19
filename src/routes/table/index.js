@@ -4,7 +4,7 @@ import Table from './Table';
 
 const title = 'Table';
 
-const action = async () => {
+const action = () => {
   return {
     chunks: ['table'],
     title,

@@ -3,6 +3,7 @@ export function format(time) {
 }
 
 function run(fn, options) {
+  console.log('run');
   const task = typeof fn.default === 'undefined' ? fn : fn.default;
   const start = new Date();
   console.info(
