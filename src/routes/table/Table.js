@@ -1,4 +1,4 @@
-import React, {Component, Fragment} from 'react';
+import React, {Component} from 'react';
 
 import withStyles from 'isomorphic-style-loader/lib/withStyles';
 import s from './Table.css'
@@ -8,13 +8,16 @@ import List from './../../components/List';
 import {connect} from 'react-redux';
 
 import getTable from '../../actions/getTable';
-import sort from '../../actions/sort';
+import sortByName from '../../actions/sortByName';
+import sortByScore from '../../actions/sortByScore';
+import search from '../../actions/search';
 import {isEmpty} from 'lodash';
 
 let skip = 20;
 let view = 700;
 let chunks = [];
 let clear = false;
+const disable = 9999999;
 
 class Table extends Component {
   constructor() {
@@ -40,13 +43,20 @@ class Table extends Component {
   };
 
   sortByName = () => {
-    this.props.getTable(null,null,'name');
+    this.props.sortByName();
+    view = disable;
+    clear = true;
+  };
+
+  sortByScore = () => {
+    this.props.sortByScore();
+    view = disable;
     clear = true;
   };
 
   search = event => {
     const params = event.target.value;
-    this.props.getTable(null, params);
+    this.props.search(params);
     clear = true;
   };
 
@@ -60,21 +70,27 @@ class Table extends Component {
 
   render() {
     const table = this.props.state.getTables;
-    console.log(table);
+
     if(clear) {
       chunks = [];
     }
+
     if(!isEmpty(table)) {
       chunks.push(...table);
     }
+
     return (
       <div className={s.card}>
-        <h2>Search</h2>
+        <h2>Search by name</h2>
         <br/>
         <input type="text" onChange={e => this.search(e)} />
         <br/><br/>
         <button className="btn btn-primary" onClick={() => this.sortByName()}>
-          Sort By name
+          Sort by name
+        </button>
+        <br/><br/>
+        <button className="btn btn-primary" onClick={() => this.sortByScore()}>
+          Sort by score
         </button>
         <br/><br/>
         <h2>Table</h2>
@@ -112,7 +128,9 @@ const mapStateToProps = state => ({
 });
 const mapDispatchToProps = {
   getTable,
-  sort,
+  sortByName,
+  sortByScore,
+  search,
 };
 export default connect(
   mapStateToProps,

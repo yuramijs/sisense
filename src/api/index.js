@@ -17,7 +17,7 @@ routes.post('/chunk', (req, res) => {
 
   if (token) {
     jwt.verify(token, config.auth.jwt.secret, (err, decoded) => {
-      if (err) return res.json({ success: false, message: 'Failed to authenticate token.' })
+      if (err) return res.json({ success: false, message: 'Failed to authenticate token.' });
       req.decoded = decoded;
       Table.findByChunk(res, chunk)
     });
