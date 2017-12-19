@@ -1,17 +1,7 @@
-/**
- * React Starter Kit (https://www.reactstarterkit.com/)
- *
- * Copyright © 2014-present Kriasoft, LLC. All rights reserved.
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE.txt file in the root directory of this source tree.
- */
-
 import path from 'path';
 import cp from 'child_process';
 import webpackConfig from './webpack.config';
 
-// Should match the text string used in `src/server.js/server.listen(...)`
 const RUNNING_REGEXP = /The server is running at http:\/\/(.*?)\//;
 
 let server;
@@ -22,7 +12,6 @@ const serverPath = path.join(
   serverConfig.output.filename.replace('[name]', 'server'),
 );
 
-// Launch or restart the Node.js server
 function runServer() {
   return new Promise(resolve => {
     function onStdOut(data) {

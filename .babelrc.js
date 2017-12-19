@@ -1,6 +1,3 @@
-
-// Babel configuration
-// https://babeljs.io/docs/usage/api/
 module.exports = {
   presets: [
     [
@@ -12,7 +9,6 @@ module.exports = {
       },
     ],
     'stage-2',
-    'flow',
     'react',
   ],
   ignore: ['node_modules', 'build'],

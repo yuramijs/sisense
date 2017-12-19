@@ -1,14 +1,6 @@
-/* @flow */
-type Fetch = (url: string, options: ?any) => Promise<any>;
-type Options = {
-  baseUrl: string,
-  cookie?: string,
-};
-
-function createFetch(fetch: Fetch, { baseUrl, cookie }: Options) {
-  // NOTE: Tweak the default options to suite your application needs
+function createFetch(fetch, { baseUrl, cookie }) {
   const defaults = {
-    method: 'POST', // handy with GraphQL backends
+    method: 'POST',
     mode: baseUrl ? 'cors' : 'same-origin',
     credentials: baseUrl ? 'include' : 'same-origin',
     headers: {
@@ -18,7 +10,7 @@ function createFetch(fetch: Fetch, { baseUrl, cookie }: Options) {
     },
   };
 
-  return (url: string, options: any) =>
+  return (url, options) =>
     url.startsWith('/graphql') || url.startsWith('/api')
       ? fetch(`${baseUrl}${url}`, {
           ...defaults,

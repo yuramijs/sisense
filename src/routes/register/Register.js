@@ -1,34 +1,53 @@
 import React from 'react';
-import withStyles from 'isomorphic-style-loader/lib/withStyles';
-import s from './Register.scss';
+
+import config from './../../config';
 
 import {sendData, getFormValues} from '../../helpers';
 
 class Register extends React.Component {
+  constructor() {
+    super();
+    this.state = {
+      status: null,
+    }
+  }
 
-  handleSubmit = e => {
+  handleSubmit = async (e) => {
     e.preventDefault();
     const data = getFormValues(this);
-    const link = 'http://localhost:3000/register';
-    sendData(link, data);
+    const link = `${config.api.serverUrl}/register`;
 
-    this.loginForm.reset();
+    try {
+      const response = await sendData(link, data);
+      console.info(response.data);
+
+      this.setState(() => {
+        return {status: 'User created successfully'};
+      });
+    }
+    catch (err) {
+      console.error(err);
+
+      this.setState(() => {
+        return {status: 'Registration failed'};
+      });
+    }
+
+    this.form.reset();
   };
 
   render() {
     return (
       <div className="card">
+        {this.state.status}
         <div className="card-header">
           <h5>{this.props.title}</h5>
         </div>
-      
         <form
-          method="post"
-          ref={el => this.loginForm = el}
+          ref={el => this.form = el}
           onSubmit={this.handleSubmit}>
           <div className="card-body">
             <label
-              className={s.register__form__label}
               htmlFor="name">
               Name
             </label>
@@ -38,7 +57,6 @@ class Register extends React.Component {
               className="form-control"
             />
             <label
-              className={s.register__form__label}
               htmlFor="password">
               Password
             </label>
@@ -58,4 +76,4 @@ class Register extends React.Component {
   }
 }
 
-export default withStyles(s)(Register);
+export default Register;

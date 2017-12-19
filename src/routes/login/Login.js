@@ -7,13 +7,11 @@ class Login extends Component {
   constructor() {
     super();
     this.state = {
-      status: false,
+      status: null,
     }
   }
 
-
   setToken = async (userCredentials) => {
-
     try {
       const response = await axios.post('http://localhost:3000/authenticate', userCredentials);
       const token = response.data.token;
@@ -23,21 +21,20 @@ class Login extends Component {
       this.setState(() => {
         return {status: 'Success! You have access to a data table'};
       });
-
     }
-    catch(e) {
+    catch (e) {
       this.setState(() => {
         return {status: 'Authentication failed'};
       });
       console.error(e);
     }
-
   };
 
   handleSubmit = e => {
     e.preventDefault();
     const userCredentials = getFormValues(this);
     this.setToken(userCredentials);
+    this.form.reset();
   };
 
   render() {
@@ -47,7 +44,7 @@ class Login extends Component {
         <div className="card-header">
           <h5>{this.props.title}</h5>
         </div>
-        <form action="authenticate" method="post" onSubmit={this.handleSubmit}>
+        <form ref={el => this.form = el} onSubmit={this.handleSubmit}>
           <div className="card-body">
             <label className='label' htmlFor="Name">
               Name
@@ -58,23 +55,29 @@ class Login extends Component {
               name="name"
               ref="name"
             />
-            <label className='label' htmlFor="Password">
+            <label
+              className='label'
+              htmlFor="Password">
               Password:
             </label>
-              <input
-                className='form-control'
-                name="password"
-                ref="password"
-              />
+            <input
+              className='form-control'
+              type="password"
+              name="password"
+              ref="password"
+            />
           </div>
           <div className="card-footer">
-            <button className="btn btn-primary" type="submit">Log in</button>
+            <button
+              className="btn btn-primary"
+              type="submit">
+              Log in
+            </button>
           </div>
         </form>
       </div>
     );
   }
 }
-
 
 export default Login

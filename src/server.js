@@ -5,6 +5,7 @@ import nodeFetch from 'node-fetch';
 import React from 'react';
 import ReactDOM from 'react-dom/server';
 import PrettyError from 'pretty-error';
+
 import App from './components/App';
 import Html from './components/Html';
 import {ErrorPageWithoutStyle} from './routes/error/ErrorPage';

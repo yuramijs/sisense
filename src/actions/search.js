@@ -1,6 +1,5 @@
 import axios from 'axios';
 
-
 export const SEARCH = 'SEARCH';
 
 const search = async (params) => {

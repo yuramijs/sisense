@@ -18,15 +18,9 @@ const staticAssetName = isDebug
   ? '[path][name].[ext]?[hash:8]'
   : '[hash:8].[ext]';
 
-// CSS Nano options http://cssnano.co/
 const minimizeCssOptions = {
   discardComments: { removeAll: true },
 };
-
-//
-// Common configuration chunk to be used for both
-// client-side (client.js) and server-side (server.js) bundles
-// -----------------------------------------------------------------------------
 
 const config = {
   context: path.resolve(__dirname, '..'),
@@ -39,23 +33,18 @@ const config = {
     chunkFilename: isDebug
       ? '[name].chunk.js'
       : '[name].[chunkhash:8].chunk.js',
-    // Point sourcemap entries to original disk location (format as URL on Windows)
     devtoolModuleFilenameTemplate: info =>
       path.resolve(info.absoluteResourcePath).replace(/\\/g, '/'),
   },
 
   resolve: {
-    // Allow absolute paths in imports, e.g. import Button from 'components/Button'
-    // Keep in sync with .flowconfig and .eslintrc
     modules: ['node_modules', 'src'],
   },
 
   module: {
-    // Make missing exports an error instead of warning
     strictExportPresence: true,
 
     rules: [
-      // Rules for JS / JSX
       {
         test: reScript,
         include: [
@@ -64,61 +53,39 @@ const config = {
         ],
         loader: 'babel-loader',
         options: {
-          // https://github.com/babel/babel-loader#options
           cacheDirectory: isDebug,
-
-          // https://babeljs.io/docs/usage/options/
           babelrc: false,
           presets: [
-            // A Babel preset that can automatically determine the Babel plugins and polyfills
-            // https://github.com/babel/babel-preset-env
             [
               'env',
               {
                 targets: {
                   browsers: pkg.browserslist,
-                  forceAllTransforms: !isDebug, // for UglifyJS
+                  forceAllTransforms: !isDebug,
                 },
                 modules: false,
                 useBuiltIns: false,
                 debug: false,
               },
             ],
-            // Experimental ECMAScript proposals
-            // https://babeljs.io/docs/plugins/#presets-stage-x-experimental-presets-
             'stage-2',
-            // Flow
-            // https://github.com/babel/babel/tree/master/packages/babel-preset-flow
-            'flow',
-            // JSX
-            // https://github.com/babel/babel/tree/master/packages/babel-preset-react
             ['react', { development: isDebug }],
           ],
           plugins: [
-            // Treat React JSX elements as value types and hoist them to the highest scope
-            // https://github.com/babel/babel/tree/master/packages/babel-plugin-transform-react-constant-elements
             ...(isDebug ? [] : ['transform-react-constant-elements']),
-            // Replaces the React.createElement function with one that is more optimized for production
-            // https://github.com/babel/babel/tree/master/packages/babel-plugin-transform-react-inline-elements
             ...(isDebug ? [] : ['transform-react-inline-elements']),
-            // Remove unnecessary React propTypes from the production build
-            // https://github.com/oliviertassinari/babel-plugin-transform-react-remove-prop-types
             ...(isDebug ? [] : ['transform-react-remove-prop-types']),
           ],
         },
       },
 
-      // Rules for Style Sheets
       {
         test: reStyle,
         rules: [
-          // Convert CSS into JS module
           {
             issuer: { not: [reStyle] },
             use: 'isomorphic-style-loader',
           },
-
-          // Process external/third-party styles
           {
             exclude: path.resolve(__dirname, '../src'),
             loader: 'css-loader',
@@ -127,26 +94,19 @@ const config = {
               minimize: isDebug ? false : minimizeCssOptions,
             },
           },
-
-          // Process internal/project styles (from src folder)
           {
             include: path.resolve(__dirname, '../src'),
             loader: 'css-loader',
             options: {
-              // CSS Loader https://github.com/webpack/css-loader
               importLoaders: 1,
               sourceMap: isDebug,
-              // CSS Modules https://github.com/css-modules/css-modules
               modules: true,
               localIdentName: isDebug
                 ? '[name]-[local]-[hash:base64:5]'
                 : '[hash:base64:5]',
-              // CSS Nano http://cssnano.co/
               minimize: isDebug ? false : minimizeCssOptions,
             },
           },
-
-          // Apply PostCSS plugins including autoprefixer
           {
             loader: 'postcss-loader',
             options: {
@@ -155,34 +115,18 @@ const config = {
               },
             },
           },
-
-          // Compile Less to CSS
-          // https://github.com/webpack-contrib/less-loader
-          // Install dependencies before uncommenting: yarn add --dev less-loader less
-          // {
-          //   test: /\.less$/,
-          //   loader: 'less-loader',
-          // },
-
-          // Compile Sass to CSS
-          // https://github.com/webpack-contrib/sass-loader
-          // Install dependencies before uncommenting: yarn add --dev sass-loader node-sass
           {
             test: /\.(scss|sass)$/,
             loader: 'sass-loader',
           },
         ],
       },
-
-      // Rules for images
       {
         test: reImage,
         oneOf: [
-          // Inline lightweight images into CSS
           {
             issuer: reStyle,
             oneOf: [
-              // Inline lightweight SVGs as UTF-8 encoded DataUrl string
               {
                 test: /\.svg$/,
                 loader: 'svg-url-loader',
@@ -191,19 +135,15 @@ const config = {
                   limit: 4096, // 4kb
                 },
               },
-
-              // Inline lightweight images as Base64 encoded DataUrl string
               {
                 loader: 'url-loader',
                 options: {
                   name: staticAssetName,
-                  limit: 4096, // 4kb
+                  limit: 4096,
                 },
               },
             ],
           },
-
-          // Or return public URL to image resource
           {
             loader: 'file-loader',
             options: {
@@ -212,21 +152,14 @@ const config = {
           },
         ],
       },
-
-      // Convert plain text into JS module
       {
         test: /\.txt$/,
         loader: 'raw-loader',
       },
-
-      // Convert Markdown into HTML
       {
         test: /\.md$/,
         loader: path.resolve(__dirname, './lib/markdown-loader.js'),
       },
-
-      // Return public URL for all assets unless explicitly excluded
-      // DO NOT FORGET to update `exclude` list when you adding a new loader
       {
         exclude: [reScript, reStyle, reImage, /\.json$/, /\.txt$/, /\.md$/],
         loader: 'file-loader',
@@ -234,8 +167,6 @@ const config = {
           name: staticAssetName,
         },
       },
-
-      // Exclude dev modules from production build
       ...(isDebug
         ? []
         : [
@@ -250,13 +181,10 @@ const config = {
     ],
   },
 
-  // Don't attempt to continue if there are any errors.
   bail: !isDebug,
 
   cache: isDebug,
 
-  // Specify what bundle information gets displayed
-  // https://webpack.js.org/configuration/stats/
   stats: {
     cached: isVerbose,
     cachedAssets: isVerbose,
@@ -270,14 +198,8 @@ const config = {
     version: isVerbose,
   },
 
-  // Choose a developer tool to enhance debugging
-  // https://webpack.js.org/configuration/devtool/#devtool
   devtool: isDebug ? 'cheap-module-inline-source-map' : 'source-map',
 };
-
-//
-// Configuration for the client-side bundle (client.js)
-// -----------------------------------------------------------------------------
 
 const clientConfig = {
   ...config,
@@ -290,8 +212,6 @@ const clientConfig = {
   },
 
   plugins: [
-    // Define free variables
-    // https://webpack.js.org/plugins/define-plugin/
     new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
     new webpack.DefinePlugin({
       'process.env.NODE_ENV': isDebug ? '"development"' : '"production"',
@@ -299,16 +219,12 @@ const clientConfig = {
       __DEV__: isDebug,
     }),
 
-    // Emit a file with assets paths
-    // https://github.com/sporto/assets-webpack-plugin#options
     new AssetsPlugin({
       path: path.resolve(__dirname, '../build'),
       filename: 'assets.json',
       prettyPrint: true,
     }),
 
-    // Move modules that occur in multiple entry chunks to a new entry chunk (the commons chunk).
-    // https://webpack.js.org/plugins/commons-chunk-plugin/
     new webpack.optimize.CommonsChunkPlugin({
       name: 'vendor',
       minChunks: module => /node_modules/.test(module.resource),
@@ -317,12 +233,9 @@ const clientConfig = {
     ...(isDebug
       ? []
       : [
-          // Decrease script evaluation time
-          // https://github.com/webpack/webpack/blob/master/examples/scope-hoisting/README.md
+
           new webpack.optimize.ModuleConcatenationPlugin(),
 
-          // Minimize all JavaScript output of chunks
-          // https://github.com/mishoo/UglifyJS2#compressor-options
           new webpack.optimize.UglifyJsPlugin({
             compress: {
               warnings: isVerbose,
@@ -341,25 +254,16 @@ const clientConfig = {
           }),
         ]),
 
-    // Webpack Bundle Analyzer
-    // https://github.com/th0r/webpack-bundle-analyzer
+
     ...(isAnalyze ? [new BundleAnalyzerPlugin()] : []),
   ],
 
-  // Some libraries import Node modules but don't use them in the browser.
-  // Tell Webpack to provide empty mocks for them so importing them works.
-  // https://webpack.js.org/configuration/node/
-  // https://github.com/webpack/node-libs-browser/tree/master/mock
   node: {
     fs: 'empty',
     net: 'empty',
     tls: 'empty',
   },
 };
-
-//
-// Configuration for the server-side bundle (server.js)
-// -----------------------------------------------------------------------------
 
 const serverConfig = {
   ...config,
@@ -379,8 +283,6 @@ const serverConfig = {
     libraryTarget: 'commonjs2',
   },
 
-  // Webpack mutates resolve object, so clone it to avoid issues
-  // https://github.com/webpack/webpack/issues/4817
   resolve: {
     ...config.resolve,
   },
@@ -389,7 +291,6 @@ const serverConfig = {
     ...config.module,
 
     rules: overrideRules(config.module.rules, rule => {
-      // Override babel-preset-env configuration for Node.js
       if (rule.loader === 'babel-loader') {
         return {
           ...rule,
@@ -415,7 +316,6 @@ const serverConfig = {
         };
       }
 
-      // Override paths to static assets
       if (
         rule.loader === 'file-loader' ||
         rule.loader === 'url-loader' ||
@@ -443,16 +343,12 @@ const serverConfig = {
   ],
 
   plugins: [
-    // Define free variables
-    // https://webpack.js.org/plugins/define-plugin/
     new webpack.DefinePlugin({
       'process.env.NODE_ENV': isDebug ? '"development"' : '"production"',
       'process.env.BROWSER': false,
       __DEV__: isDebug,
     }),
 
-    // Adds a banner to the top of each generated chunk
-    // https://webpack.js.org/plugins/banner-plugin/
     new webpack.BannerPlugin({
       banner: 'require("source-map-support").install();',
       raw: true,
@@ -460,8 +356,6 @@ const serverConfig = {
     }),
   ],
 
-  // Do not replace node globals with polyfills
-  // https://webpack.js.org/configuration/node/
   node: {
     console: false,
     global: false,

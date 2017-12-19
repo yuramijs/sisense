@@ -1,12 +1,3 @@
-/**
- * React Starter Kit (https://www.reactstarterkit.com/)
- *
- * Copyright © 2014-present Kriasoft, LLC. All rights reserved.
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE.txt file in the root directory of this source tree.
- */
-
 import path from 'path';
 import express from 'express';
 import browserSync from 'browser-sync';
@@ -20,13 +11,9 @@ import clean from './clean';
 
 const isDebug = !process.argv.includes('--release');
 
-// https://webpack.js.org/configuration/watch/#watchoptions
+
 const watchOptions = {
-  // Watching may not work with NFS and machines in VirtualBox
-  // Uncomment next line if it is your case (use true or interval in milliseconds)
-  // poll: true,
-  // Decrease CPU or memory usage in some file systems
-  // ignored: /node_modules/,
+
 };
 
 function createCompilationPromise(name, compiler, config) {
@@ -59,17 +46,12 @@ function createCompilationPromise(name, compiler, config) {
 
 let server;
 
-/**
- * Launches a development web server with "live reload" functionality -
- * synchronizing URLs, interactions and code changes across multiple devices.
- */
 async function start() {
   if (server) return server;
   server = express();
   server.use(errorOverlayMiddleware());
   server.use(express.static(path.resolve(__dirname, '../public')));
 
-  // Configure client-side hot module replacement
   const clientConfig = webpackConfig.find(config => config.name === 'client');
   clientConfig.entry.client = ['./tools/lib/webpackHotDevClient']
     .concat(clientConfig.entry.client)
@@ -105,7 +87,6 @@ async function start() {
     new webpack.NamedModulesPlugin(),
   );
 
-  // Configure compilation
   await run(clean);
   const multiCompiler = webpack(webpackConfig);
   const clientCompiler = multiCompiler.compilers.find(
@@ -125,7 +106,6 @@ async function start() {
     serverConfig,
   );
 
-  // https://github.com/webpack/webpack-dev-middleware
   server.use(
     webpackDevMiddleware(clientCompiler, {
       publicPath: clientConfig.output.publicPath,
@@ -134,7 +114,6 @@ async function start() {
     }),
   );
 
-  // https://github.com/glenjamin/webpack-hot-middleware
   server.use(webpackHotMiddleware(clientCompiler, { log: false }));
 
   let appPromise;
@@ -143,7 +122,6 @@ async function start() {
   serverCompiler.plugin('compile', () => {
     if (!appPromiseIsResolved) return;
     appPromiseIsResolved = false;
-    // eslint-disable-next-line no-return-assign
     appPromise = new Promise(resolve => (appPromiseResolve = resolve));
   });
 
@@ -185,7 +163,6 @@ async function start() {
         if (['abort', 'fail'].includes(app.hot.status())) {
           console.warn(`${hmrPrefix}Cannot apply update.`);
           delete require.cache[require.resolve('../build/server')];
-          // eslint-disable-next-line global-require, import/no-unresolved
           app = require('../build/server').default;
           console.warn(`${hmrPrefix}App has been reloaded.`);
         } else {
@@ -205,24 +182,19 @@ async function start() {
     }
   });
 
-  // Wait until both client-side and server-side bundles are ready
   await clientPromise;
   await serverPromise;
 
   const timeStart = new Date();
   console.info(`[${format(timeStart)}] Launching server...`);
 
-  // Load compiled src/server.js as a middleware
-  // eslint-disable-next-line global-require, import/no-unresolved
   app = require('../build/server').default;
   appPromiseIsResolved = true;
   appPromiseResolve();
 
-  // Launch the development server with Browsersync and HMR
   await new Promise((resolve, reject) =>
     browserSync.create().init(
       {
-        // https://www.browsersync.io/docs/options
         server: 'src/server.js',
         middleware: [server],
         open: !process.argv.includes('--silent'),
